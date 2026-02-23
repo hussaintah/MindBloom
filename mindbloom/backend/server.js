@@ -34,13 +34,13 @@ app.use('/api/notifications', notificationRoutes);
 app.get('/health', (req, res) => res.json({ status: 'ok', time: new Date() }));
 
 // Cron: Daily sleep reminders at 10 PM
-cron.schedule('0 22 * * *', async () => {
+cron.schedule('0 17 * * *', async () => {
   console.log('Running nightly sleep reminder cron...');
   await sendDailyReminders('sleep');
 }, { timezone: 'UTC' });
 
 // Cron: Morning check-in at 8 AM
-cron.schedule('0 8 * * *', async () => {
+cron.schedule('0 3 * * *', async () => {
   console.log('Running morning check-in cron...');
   await sendDailyReminders('morning');
 }, { timezone: 'UTC' });
