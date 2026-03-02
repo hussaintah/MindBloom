@@ -20,13 +20,15 @@ export default function Auth() {
 
     if (tab === 'signin') {
       const { error } = await signIn(email, password);
-      if (error) setError(error.message);
-      else navigate('/');
+      if (error) { setError(error.message); setLoading(false); return; }
+      // Show intro only if they haven't seen it before
+      const seenIntro = localStorage.getItem('mindbloom_seen_intro');
+      navigate(seenIntro ? '/' : '/intro');
     } else {
-      if (!name) return setError('Please enter your name'), setLoading(false);
+      if (!name) { setError('Please enter your name'); setLoading(false); return; }
       const { error } = await signUp(email, password, name);
       if (error) setError(error.message);
-      else setMessage('Check your email to confirm your account!');
+      else setMessage('Account created! Sign in to continue.');
     }
     setLoading(false);
   };
