@@ -140,7 +140,7 @@ export default function Breathe() {
         >
           <div style={{ textAlign: 'center' }}>
             <div style={{ fontSize: 16, opacity: 0.9 }}>
-              {active ? currentPhase.label : 'Tap Start'}
+              {active ? currentPhase.label : 'Ready'}
             </div>
             {active && (
               <div style={{ fontSize: 40, fontWeight: 300, lineHeight: 1, marginTop: 4 }}>
