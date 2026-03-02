@@ -5,6 +5,15 @@ import { API_URL } from '../lib/supabase';
 
 const QUALITY_LABELS = ['Terrible', 'Poor', 'Okay', 'Good', 'Great'];
 
+const SLEEP_VIDEOS = [
+  { title: 'How to Sleep Better — The Science of Sleep', channel: 'Kurzgesagt', url: 'https://www.youtube.com/watch?v=gedoSfZvBgE', thumb: '😴' },
+  { title: 'Why Sleep is the #1 Factor in Mental Health', channel: 'Dr. Andrew Huberman', url: 'https://www.youtube.com/watch?v=nm1TxQj9IsQ', thumb: '🧠' },
+  { title: 'The Benefits of a Good Night\'s Sleep', channel: 'TED-Ed', url: 'https://www.youtube.com/watch?v=gedoSfZvBgE', thumb: '✨' },
+  { title: 'Sleep Hygiene: How to Build Better Sleep Habits', channel: 'Psych2Go', url: 'https://www.youtube.com/watch?v=t0kACis_dJE', thumb: '🌙' },
+  { title: 'Why Do We Sleep? — Matthew Walker', channel: 'TED', url: 'https://www.youtube.com/watch?v=5MuIMqhT8oM', thumb: '🔬' },
+  { title: 'How to Fix Your Sleep Schedule', channel: 'Healthline', url: 'https://www.youtube.com/watch?v=2beTMaHWMtE', thumb: '⏰' },
+];
+
 export default function Sleep() {
   const { user } = useAuth();
   const [hours, setHours] = useState(7);
@@ -18,35 +27,23 @@ export default function Sleep() {
   useEffect(() => {
     if (!user) return;
     fetch(`${API_URL}/api/tracking/history/${user.id}`)
-      .then(r => r.json())
-      .then(d => setHistory(d.sleep || []));
+      .then(r => r.json()).then(d => setHistory(d.sleep || []));
     fetch(`${API_URL}/api/tracking/today/${user.id}`)
-      .then(r => r.json())
-      .then(d => {
-        if (d.sleep) {
-          setToday(d.sleep);
-          setHours(d.sleep.hours);
-          setQuality(d.sleep.quality);
-          setNotes(d.sleep.notes || '');
-        }
+      .then(r => r.json()).then(d => {
+        if (d.sleep) { setToday(d.sleep); setHours(d.sleep.hours); setQuality(d.sleep.quality); setNotes(d.sleep.notes || ''); }
       });
   }, [user]);
 
   const save = async () => {
     setLoading(true);
     await fetch(`${API_URL}/api/tracking/sleep`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: user.id, hours, quality, notes })
     });
-    setSaved(true);
-    setLoading(false);
+    setSaved(true); setLoading(false);
     setTimeout(() => setSaved(false), 3000);
-
-    // Refresh today
     const d = await fetch(`${API_URL}/api/tracking/today/${user.id}`).then(r => r.json());
     setToday(d.sleep);
-
     const hist = await fetch(`${API_URL}/api/tracking/history/${user.id}`).then(r => r.json());
     setHistory(hist.sleep || []);
   };
@@ -64,7 +61,7 @@ export default function Sleep() {
   return (
     <div>
       <div className="page-header">
-        <h1>Sleep Tracker 🌙</h1>
+        <h1>Sleep Analysis 🌙</h1>
         <p>Quality sleep is the foundation of mental health</p>
       </div>
 
@@ -72,51 +69,33 @@ export default function Sleep() {
         {/* Log form */}
         <div className="card">
           <h3 style={{ color: 'var(--forest)', marginBottom: 20 }}>
-            {today ? 'Update today\'s sleep' : 'Log last night\'s sleep'}
+            {today ? "Update today's sleep" : "Log last night's sleep"}
           </h3>
-
           <div className="form-group">
             <label>Hours slept</label>
             <div style={{ display: 'flex', alignItems: 'center', gap: 16, marginTop: 8 }}>
-              <input
-                type="range" min="0" max="12" step="0.5"
-                value={hours} onChange={e => setHours(parseFloat(e.target.value))}
-                style={{ flex: 1, accentColor: 'var(--sage)' }}
-              />
-              <span style={{ fontFamily: 'Fraunces', fontSize: 28, color: 'var(--forest)', minWidth: 60 }}>
-                {hours}h
-              </span>
+              <input type="range" min="0" max="12" step="0.5" value={hours}
+                onChange={e => setHours(parseFloat(e.target.value))}
+                style={{ flex: 1, accentColor: 'var(--sage)' }} />
+              <span style={{ fontFamily: 'Fraunces', fontSize: 28, color: 'var(--forest)', minWidth: 60 }}>{hours}h</span>
             </div>
             <div style={{ background: 'var(--sage-pale)', borderRadius: 10, padding: '10px 14px', marginTop: 10 }}>
               <p style={{ fontSize: 13, color: 'var(--forest)' }}>💡 {getSleepTip(hours)}</p>
             </div>
           </div>
-
           <div className="form-group">
             <label>Sleep quality</label>
             <div className="quality-slider">
               {QUALITY_LABELS.map((label, i) => (
-                <button
-                  key={i}
-                  className={`quality-btn ${quality === i + 1 ? 'selected' : ''}`}
-                  onClick={() => setQuality(i + 1)}
-                >
-                  {label}
-                </button>
+                <button key={i} className={`quality-btn ${quality === i + 1 ? 'selected' : ''}`} onClick={() => setQuality(i + 1)}>{label}</button>
               ))}
             </div>
           </div>
-
           <div className="form-group">
             <label>Notes (optional)</label>
-            <textarea
-              rows={3}
-              placeholder="Any dreams? Woke up during the night? Stress affecting sleep?"
-              value={notes}
-              onChange={e => setNotes(e.target.value)}
-            />
+            <textarea rows={3} placeholder="Any dreams? Woke up during the night? Stress affecting sleep?"
+              value={notes} onChange={e => setNotes(e.target.value)} />
           </div>
-
           <button className="btn btn-primary" onClick={save} disabled={loading} style={{ width: '100%', justifyContent: 'center' }}>
             {loading ? 'Saving...' : saved ? '✓ Saved!' : today ? 'Update Log' : 'Save Sleep Log'}
           </button>
@@ -160,6 +139,40 @@ export default function Sleep() {
             </div>
             <p style={{ fontSize: 11, color: 'var(--muted)', textAlign: 'center', marginTop: 4 }}>Green lines = ideal range (7-9h)</p>
           </div>
+        </div>
+      </div>
+
+      {/* Sleep Videos Section */}
+      <div style={{ marginTop: 36 }}>
+        <h2 style={{ fontFamily: 'Fraunces, Georgia, serif', color: 'var(--forest)', fontSize: 22, marginBottom: 6 }}>
+          🎬 Learn About Sleep
+        </h2>
+        <p style={{ color: 'var(--muted)', fontSize: 14, marginBottom: 20 }}>
+          Watch these videos to understand the science of sleep and how to improve yours.
+        </p>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(280px, 1fr))', gap: 16 }}>
+          {SLEEP_VIDEOS.map((video, i) => (
+            <a key={i} href={video.url} target="_blank" rel="noopener noreferrer"
+              style={{ textDecoration: 'none' }}>
+              <div className="card" style={{
+                display: 'flex', gap: 14, alignItems: 'flex-start',
+                transition: 'all 0.2s', cursor: 'pointer', border: '1px solid var(--border)'
+              }}
+                onMouseEnter={e => e.currentTarget.style.borderColor = 'var(--sage)'}
+                onMouseLeave={e => e.currentTarget.style.borderColor = 'var(--border)'}
+              >
+                <div style={{
+                  width: 44, height: 44, borderRadius: 10, background: 'var(--sage-pale)',
+                  display: 'flex', alignItems: 'center', justifyContent: 'center',
+                  fontSize: 22, flexShrink: 0
+                }}>{video.thumb}</div>
+                <div>
+                  <p style={{ fontWeight: 600, fontSize: 13, color: 'var(--forest)', lineHeight: 1.4, marginBottom: 4 }}>{video.title}</p>
+                  <p style={{ fontSize: 12, color: 'var(--muted)' }}>▶ {video.channel} · YouTube</p>
+                </div>
+              </div>
+            </a>
+          ))}
         </div>
       </div>
     </div>
