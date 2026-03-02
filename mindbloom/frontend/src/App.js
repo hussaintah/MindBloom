@@ -22,8 +22,8 @@ export default function App() {
     <AuthProvider>
       <BrowserRouter>
         <Routes>
-          <Route path="/start" element={<Landing />} />
           <Route path="/auth" element={<Auth />} />
+          <Route path="/intro" element={<PrivateRoute><Landing /></PrivateRoute>} />
           <Route path="/" element={<PrivateRoute><Layout /></PrivateRoute>}>
             <Route index element={<Dashboard />} />
             <Route path="chat" element={<Chat />} />
