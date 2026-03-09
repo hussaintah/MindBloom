@@ -6,12 +6,12 @@ import { API_URL } from '../lib/supabase';
 const QUALITY_LABELS = ['Terrible', 'Poor', 'Okay', 'Good', 'Great'];
 
 const SLEEP_VIDEOS = [
-  { title: 'How to Sleep Better — The Science of Sleep', channel: 'Kurzgesagt', url: 'https://www.youtube.com/watch?v=gedoSfZvBgE', thumb: '😴' },
-  { title: 'Why Sleep is the #1 Factor in Mental Health', channel: 'Dr. Andrew Huberman', url: 'https://www.youtube.com/watch?v=nm1TxQj9IsQ', thumb: '🧠' },
-  { title: 'The Benefits of a Good Night\'s Sleep', channel: 'TED-Ed', url: 'https://www.youtube.com/watch?v=gedoSfZvBgE', thumb: '✨' },
-  { title: 'Sleep Hygiene: How to Build Better Sleep Habits', channel: 'Psych2Go', url: 'https://www.youtube.com/watch?v=t0kACis_dJE', thumb: '🌙' },
-  { title: 'Why Do We Sleep? — Matthew Walker', channel: 'TED', url: 'https://www.youtube.com/watch?v=5MuIMqhT8oM', thumb: '🔬' },
-  { title: 'How to Fix Your Sleep Schedule', channel: 'Healthline', url: 'https://www.youtube.com/watch?v=2beTMaHWMtE', thumb: '⏰' },
+  { title: 'The Benefits of a Good Night\'s Sleep', channel: 'TED-Ed', url: 'https://www.youtube.com/watch?v=gedoSfZvBgE', thumb: '😴' },
+  { title: 'Master Your Sleep & Be More Alert When Awake', channel: 'Dr. Andrew Huberman', url: 'https://www.youtube.com/watch?v=nm1TxQj9IsQ', thumb: '🧠' },
+  { title: 'Sleep is Your Superpower', channel: 'TED', url: 'https://www.youtube.com/watch?v=5MuIMqhT8DM', thumb: '✨' },
+  { title: 'How To Cure Insomnia & Build Better Sleep Habits', channel: 'Psych2Go', url: 'https://www.youtube.com/watch?v=ZkY3OWYW0Gk', thumb: '🌙' },
+  { title: '6 Tips for Better Sleep', channel: 'TED', url: 'https://www.youtube.com/watch?v=t0kACis_dJE', thumb: '🔬' },
+  { title: 'The Science of Sleep & Dreams', channel: 'CrashCourse', url: 'https://www.youtube.com/watch?v=rMHus-0wFSo', thumb: '⏰' },
 ];
 
 export default function Sleep() {
