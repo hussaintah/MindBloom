@@ -49,13 +49,16 @@ async function sendDailyReminders(type) {
 }
 
 function getFooter() {
+  const logoUrl = `${process.env.FRONTEND_URL || 'https://mindbloom.app'}/logo.jpeg`;
   return `
   <div style="margin-top:32px; padding-top:20px; border-top:2px solid #e0ede6; text-align:center; font-family:Georgia,serif;">
+    <img src="${logoUrl}" alt="Amity University - Centre for Science of Happiness"
+      style="height:36px; width:auto; margin:0 auto 12px; display:block;" />
     <p style="color:#4a7c59; font-size:15px; font-weight:bold; margin:0 0 4px;">
       Working for your well-being
     </p>
-    <p style="color:#5a7a6a; font-size:13px; margin:0 0 10px;">
-      Made by <strong>Centre of Happiness</strong>, Amity University, Noida, Uttar Pradesh, India
+    <p style="color:#5a7a6a; font-size:13px; margin:0 0 4px;">
+      Made by <strong>Centre of Happiness</strong>, Amity University,<br>Noida, Uttar Pradesh, India
     </p>
     <p style="color:#8aaa9a; font-size:12px; margin:0 0 4px;">
       📧
