@@ -48,52 +48,39 @@ async function sendDailyReminders(type) {
   }
 }
 
-function wrapEmail(body, bgColor) {
-  // Hidden preheader filler prevents Gmail from collapsing the footer as "quoted text"
-  const filler = '&nbsp;&zwnj;'.repeat(120);
-  return `<!DOCTYPE html>
-<html lang="en">
-<head><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light dark"><meta name="supported-color-schemes" content="light dark"><title>MindBloom</title></head>
-<body style="margin:0;padding:0;background:#f0f4f0;">
-  <div style="display:none;max-height:0;overflow:hidden;mso-hide:all;">${filler}</div>
-  <table width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#f0f4f0;padding:24px 0;">
-    <tr><td align="center">
-      <div style="font-family:Georgia,serif;max-width:560px;width:100%;background:${bgColor};padding:40px;border-radius:16px;box-shadow:0 2px 12px rgba(0,0,0,0.08);">
-        ${body}
-        ${getFooter()}
-      </div>
-    </td></tr>
-  </table>
-</body>
-</html>`;
+// Each call generates a unique token so Gmail never sees two identical emails
+// and therefore never collapses the footer as "quoted text"
+function uniqueToken() {
+  return Date.now().toString(36) + Math.random().toString(36).slice(2, 7);
 }
 
 function getFooter() {
   const logoUrl = `${process.env.FRONTEND_URL || 'https://mindbloom.app'}/logo.jpeg`;
   return `
-  <div style="margin-top:32px; padding-top:24px; border-top:2px solid #e0ede6; text-align:center; font-family:Georgia,serif;">
+  <div style="margin-top:32px; padding-top:20px; border-top:2px solid #e0ede6; text-align:center; font-family:Georgia,serif;">
     <img src="${logoUrl}" alt="Amity University - Centre for Science of Happiness"
-      style="height:64px; width:auto; margin:0 auto 14px; display:block;" />
-    <p style="color:#4a7c59; font-size:15px; font-weight:bold; margin:0 0 6px;">
+      style="height:56px; width:auto; margin:0 auto 12px; display:block;" />
+    <p style="color:#4a7c59; font-size:15px; font-weight:bold; margin:0 0 4px;">
       Working for your well-being
     </p>
-    <p style="color:#5a7a6a; font-size:13px; margin:0 0 10px; line-height:1.6;">
+    <p style="color:#5a7a6a; font-size:13px; margin:0 0 10px;">
       Made by <strong>Centre of Happiness</strong>, Amity University,<br>Noida, Uttar Pradesh, India
     </p>
-    <p style="color:#8aaa9a; font-size:12px; margin:0 0 5px;">
-      📧&nbsp;
+    <p style="color:#8aaa9a; font-size:12px; margin:0 0 4px;">
+      📧
       <a href="mailto:happiness@amity.edu" style="color:#4a7c59; text-decoration:none;">happiness@amity.edu</a>
       &nbsp;&middot;&nbsp;
       <a href="mailto:happyness.amity@gmail.com" style="color:#4a7c59; text-decoration:none;">happyness.amity@gmail.com</a>
     </p>
     <p style="color:#8aaa9a; font-size:12px; margin:0;">
-      📞&nbsp;<a href="tel:+918447968032" style="color:#4a7c59; text-decoration:none;">+91 8447968032</a>
+      📞 <a href="tel:+918447968032" style="color:#4a7c59; text-decoration:none;">+91 8447968032</a>
     </p>
   </div>`;
 }
 
 function getWelcomeEmail() {
-  return wrapEmail(`
+  return `
+  <div style="font-family:Georgia,serif; max-width:560px; margin:0 auto; background:#fdf8f3; padding:40px; border-radius:16px;">
     <h1 style="color:#2d5a45; font-size:28px; margin-bottom:8px;">Welcome to MindBloom 🌸</h1>
     <p style="color:#5a7a6a; font-size:16px; line-height:1.6;">You've taken the first step toward a healthier, happier you. MindBloom is here to help you track your sleep, understand your mood, and build daily habits that actually stick.</p>
     <div style="background:#e8f5ee; border-radius:12px; padding:20px; margin:24px 0;">
@@ -107,7 +94,9 @@ function getWelcomeEmail() {
     </div>
     <p style="color:#8aaa9a; font-size:14px;">You'll receive gentle reminders to help you stay consistent. You can manage these in your settings anytime.</p>
     <p style="color:#2d5a45; font-size:16px; margin-top:24px;">With care,<br><strong>The MindBloom Team 🌿</strong></p>
-  `, '#fdf8f3');
+    ${getFooter()}
+    <!-- mid:${uniqueToken()} -->
+  </div>`;
 }
 
 function getSleepReminderEmail() {
@@ -118,14 +107,17 @@ function getSleepReminderEmail() {
     "Write down one thing you're grateful for before closing your eyes."
   ];
   const tip = tips[Math.floor(Math.random() * tips.length)];
-  return wrapEmail(`
+  return `
+  <div style="font-family:Georgia,serif; max-width:560px; margin:0 auto; background:#1a1a2e; padding:40px; border-radius:16px; color:#e8e0f0;">
     <h1 style="color:#a78bfa; font-size:26px;">🌙 Time to wind down</h1>
     <p style="color:#c4b5f5; line-height:1.7;">Your body is ready for rest. A consistent sleep routine is one of the most powerful things you can do for your mental health.</p>
     <div style="background:#2d2b55; border-radius:12px; padding:20px; margin:24px 0; border-left:4px solid #a78bfa;">
       <p style="color:#e8e0f0; margin:0;"><strong>Tonight's tip:</strong> ${tip}</p>
     </div>
     <p style="color:#9ca3af; font-size:14px;">Don't forget to log your sleep in MindBloom tomorrow morning. Sweet dreams! 🌟</p>
-  `, '#1a1a2e');
+    ${getFooter()}
+    <!-- mid:${uniqueToken()} -->
+  </div>`;
 }
 
 function getMorningEmail() {
@@ -136,14 +128,17 @@ function getMorningEmail() {
     "You are doing better than you think. Keep going."
   ];
   const affirmation = affirmations[Math.floor(Math.random() * affirmations.length)];
-  return wrapEmail(`
+  return `
+  <div style="font-family:Georgia,serif; max-width:560px; margin:0 auto; background:#fffbf0; padding:40px; border-radius:16px;">
     <h1 style="color:#d97706; font-size:26px;">🌅 Good morning!</h1>
     <p style="color:#92400e; font-size:18px; font-style:italic; margin:16px 0;">"${affirmation}"</p>
     <p style="color:#78716c; line-height:1.7;">Take 2 minutes to check in with yourself today. How did you sleep? How are you feeling? Your daily log helps you see patterns and feel more in control.</p>
     <div style="background:#fef3c7; border-radius:12px; padding:16px; margin:20px 0;">
       <p style="color:#92400e; margin:0;">☀️ Open MindBloom to log your morning check-in and start your day with intention.</p>
     </div>
-  `, '#fffbf0');
+    ${getFooter()}
+    <!-- mid:${uniqueToken()} -->
+  </div>`;
 }
 
 module.exports = router;
