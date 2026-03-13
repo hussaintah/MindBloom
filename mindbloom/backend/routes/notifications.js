@@ -55,11 +55,11 @@ function getFooter() {
       Working for your well-being
     </p>
     <p style="color:#5a7a6a; font-size:13px; margin:0 0 10px;">
-      Made by <strong>Centre of Happiness</strong>, Amity University
+      Made by <strong>Centre of Happiness</strong>, Amity University, Noida, Uttar Pradesh, India
     </p>
     <p style="color:#8aaa9a; font-size:12px; margin:0 0 4px;">
       📧
-      <a href="mailto:happyness@amity.edu" style="color:#4a7c59; text-decoration:none;">happyness@amity.edu</a>
+      <a href="mailto:happiness@amity.edu" style="color:#4a7c59; text-decoration:none;">happiness@amity.edu</a>
       &nbsp;&middot;&nbsp;
       <a href="mailto:happyness.amity@gmail.com" style="color:#4a7c59; text-decoration:none;">happyness.amity@gmail.com</a>
     </p>
