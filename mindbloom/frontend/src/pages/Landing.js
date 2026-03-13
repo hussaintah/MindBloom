@@ -76,11 +76,11 @@ export default function Landing() {
           Working for your well-being
         </p>
         <p style={{ color: '#5a7a6a', fontSize: 13, marginBottom: 6 }}>
-          Made by <strong>Centre of Happiness</strong>, Amity University
+          Made by <strong>Centre of Happiness</strong>, Amity University, Noida, Uttar Pradesh, India
         </p>
         <p style={{ color: '#8aaa9a', fontSize: 13, marginBottom: 3 }}>
           📧{' '}
-          <a href="mailto:happyness@amity.edu" style={{ color: '#4a7c59', textDecoration: 'none' }}>happyness@amity.edu</a>
+          <a href="mailto:happiness@amity.edu" style={{ color: '#4a7c59', textDecoration: 'none' }}>happiness@amity.edu</a>
           {' · '}
           <a href="mailto:happyness.amity@gmail.com" style={{ color: '#4a7c59', textDecoration: 'none' }}>happyness.amity@gmail.com</a>
         </p>
