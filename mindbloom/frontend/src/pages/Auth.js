@@ -38,7 +38,7 @@ export default function Auth() {
       <div className="auth-card">
         <div className="auth-logo">
           <div style={{ fontSize: 48, marginBottom: 8 }}>🌸</div>
-          <h1>MindBloom</h1>
+          <h1>MindBloom <span style={{ fontSize: '0.38em', fontWeight: 700, background: 'rgba(45,90,61,0.12)', color: 'var(--teal, #2d7a55)', border: '1px solid rgba(45,90,61,0.25)', borderRadius: 5, padding: '2px 7px', verticalAlign: 'middle', letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: 'DM Mono, monospace' }}>Beta</span></h1>
           <p>Your daily mental wellness companion</p>
         </div>
 
