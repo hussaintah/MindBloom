@@ -143,7 +143,7 @@ export default function Settings() {
 
         {/* About */}
         <div className="card" style={{ background: 'var(--forest)', color: 'rgba(255,255,255,0.8)' }}>
-          <p style={{ fontFamily: 'Fraunces', fontSize: 18, color: 'white', marginBottom: 8 }}>About MindBloom 🌸</p>
+          <p style={{ fontFamily: 'Fraunces', fontSize: 18, color: 'white', marginBottom: 8 }}>About MindBloom 🌸 <span style={{ fontSize: 10, fontWeight: 700, background: 'rgba(255,255,255,0.18)', color: 'white', borderRadius: 4, padding: '2px 6px', marginLeft: 4, letterSpacing: '0.06em', textTransform: 'uppercase', verticalAlign: 'middle' }}>Beta</span></p>
           <p style={{ fontSize: 14, lineHeight: 1.7 }}>
             MindBloom is a mental wellness tracking app built to help you understand your patterns and build healthier habits.
             Track sleep, log your mood, breathe with intention, and talk to Bloom — your AI wellness companion.
