@@ -23,7 +23,7 @@ export default function Landing() {
       {/* App title */}
       <div style={{ textAlign: 'center', marginBottom: 36 }}>
         <div style={{ fontSize: 48, marginBottom: 8 }}>🌸</div>
-        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 38, fontWeight: 700, color: '#2d5a3d', margin: 0 }}>MindBloom</h1>
+        <h1 style={{ fontFamily: 'Georgia, serif', fontSize: 38, fontWeight: 700, color: '#2d5a3d', margin: 0 }}>MindBloom <span style={{ fontSize: 14, fontWeight: 700, color: '#2d5a3d', background: 'rgba(45,90,61,0.10)', border: '1px solid rgba(45,90,61,0.25)', borderRadius: 5, padding: '2px 8px', verticalAlign: 'middle', letterSpacing: '0.08em', textTransform: 'uppercase', fontFamily: 'DM Mono, monospace' }}>Beta</span></h1>
         <p style={{ color: '#5a7a6a', fontSize: 16, marginTop: 8, maxWidth: 420 }}>
           Your personal wellness companion — track your sleep, understand your mood, and build habits that last.
         </p>
@@ -76,11 +76,11 @@ export default function Landing() {
           Working for your well-being
         </p>
         <p style={{ color: '#5a7a6a', fontSize: 13, marginBottom: 6 }}>
-          Made by <strong>Centre of Happiness</strong>, Amity University, Noida, Uttar Pradesh, India
+          Made by <strong>Centre of Happiness</strong>, Amity University
         </p>
         <p style={{ color: '#8aaa9a', fontSize: 13, marginBottom: 3 }}>
           📧{' '}
-          <a href="mailto:happiness@amity.edu" style={{ color: '#4a7c59', textDecoration: 'none' }}>happiness@amity.edu</a>
+          <a href="mailto:happyness@amity.edu" style={{ color: '#4a7c59', textDecoration: 'none' }}>happyness@amity.edu</a>
           {' · '}
           <a href="mailto:happyness.amity@gmail.com" style={{ color: '#4a7c59', textDecoration: 'none' }}>happyness.amity@gmail.com</a>
         </p>
