@@ -23,7 +23,7 @@ export default function Layout() {
           <img src="/logo.jpeg" alt="Amity University" style={{ width: '100%', maxWidth: 160, objectFit: 'contain', borderRadius: 6, background: 'white', padding: 4 }} />
           <div style={{ display: 'flex', alignItems: 'center', gap: 6, marginTop: 4 }}>
             <span>🌸</span>
-            <span style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 16, fontWeight: 700 }}>MindBloom</span>
+            <span style={{ fontFamily: 'Fraunces, Georgia, serif', fontSize: 16, fontWeight: 700 }}>MindBloom</span><span style={{ fontSize: 9, fontWeight: 700, color: '#fff', background: 'rgba(255,255,255,0.18)', borderRadius: 4, padding: '1px 5px', marginLeft: 5, letterSpacing: '0.05em', verticalAlign: 'middle', textTransform: 'uppercase' }}>Beta</span>
           </div>
         </div>
         {NAV.map(({ to, icon, label }) => (
