@@ -23,12 +23,15 @@ export default function Mood() {
   const [history, setHistory] = useState([]);
   const [today, setToday] = useState(null);
   const [saved, setSaved] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!user) return;
     fetchWithTimeout(`${API_URL}/api/tracking/history/${user.id}`)
       .then(r => r.json())
-      .then(d => setHistory(d.mood || []));
+      .then(d => setHistory(d.mood || []))
+      .catch(err => setError(err.message));
+
     fetchWithTimeout(`${API_URL}/api/tracking/today/${user.id}`)
       .then(r => r.json())
       .then(d => {
@@ -38,7 +41,8 @@ export default function Mood() {
           setEmotion(d.mood.emotion || '');
           setNote(d.mood.note || '');
         }
-      });
+      })
+      .catch(err => setError(err.message));
   }, [user]);
 
   const save = async () => {
@@ -64,6 +68,13 @@ export default function Mood() {
         <h1>Mood Check-in 🌈</h1>
         <p>Understanding your emotions is the first step to managing them</p>
       </div>
+
+      {error && (
+        <div className="card" style={{ borderLeft: '4px solid #e74c3c', marginBottom: 16 }}>
+          <p style={{ color: '#e74c3c', margin: 0 }}>⚠️ {error}</p>
+        </div>
+      )}
+
 
       <div className="grid-2 gap-20">
         <div className="card">
