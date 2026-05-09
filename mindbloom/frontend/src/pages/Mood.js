@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../hooks/useAuth';
 import { API_URL } from '../lib/supabase';
+// Add this import at the top of Mood.js, Sleep.js, Dashboard.js
+import { fetchWithTimeout } from '../lib/fetchWithTimeout';
 
 const MOODS = [
   { score: 1, emoji: '😢', label: 'Awful' },
@@ -24,10 +26,10 @@ export default function Mood() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`${API_URL}/api/tracking/history/${user.id}`)
+    fetchWithTimeout(`${API_URL}/api/tracking/history/${user.id}`)
       .then(r => r.json())
       .then(d => setHistory(d.mood || []));
-    fetch(`${API_URL}/api/tracking/today/${user.id}`)
+    fetchWithTimeout(`${API_URL}/api/tracking/today/${user.id}`)
       .then(r => r.json())
       .then(d => {
         if (d.mood) {
@@ -40,7 +42,7 @@ export default function Mood() {
   }, [user]);
 
   const save = async () => {
-    await fetch(`${API_URL}/api/tracking/mood`, {
+    await fetchWithTimeout(`${API_URL}/api/tracking/mood`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: user.id, score, emotion, note })
@@ -48,9 +50,9 @@ export default function Mood() {
     setSaved(true);
     setTimeout(() => setSaved(false), 3000);
 
-    const d = await fetch(`${API_URL}/api/tracking/today/${user.id}`).then(r => r.json());
+    const d = await fetchWithTimeout(`${API_URL}/api/tracking/today/${user.id}`).then(r => r.json());
     setToday(d.mood);
-    const hist = await fetch(`${API_URL}/api/tracking/history/${user.id}`).then(r => r.json());
+    const hist = await fetchWithTimeout(`${API_URL}/api/tracking/history/${user.id}`).then(r => r.json());
     setHistory(hist.mood || []);
   };
 
