@@ -4,6 +4,12 @@ const Groq = require('groq-sdk');
 
 const groq = new Groq({ apiKey: process.env.GROQ_API_KEY });
 
+const { createClient } = require('@supabase/supabase-js');
+const supabase = createClient(
+  process.env.SUPABASE_URL,
+  process.env.SUPABASE_SERVICE_KEY
+);
+
 const SYSTEM_PROMPT = `You are Bloom, a warm, empathetic mental health companion inside the MindBloom app. You support users with their emotional wellbeing, stress, sleep, and happiness.
 
 Guidelines:
@@ -59,6 +65,38 @@ router.post('/', async (req, res) => {
     console.error('Groq error:', error);
     res.status(500).json({ error: 'Chat service unavailable' });
   }
+});
+
+// Get chat history for a user
+router.get('/history/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { data, error } = await supabase
+    .from('chat_history')
+    .select('messages')
+    .eq('user_id', userId)
+    .single();
+
+  if (error && error.code !== 'PGRST116') {
+    return res.status(500).json({ error: error.message });
+  }
+  res.json({ messages: data?.messages || [] });
+});
+
+// Save chat history for a user
+router.post('/history/:userId', async (req, res) => {
+  const { userId } = req.params;
+  const { messages } = req.body;
+
+  const { error } = await supabase
+    .from('chat_history')
+    .upsert({
+      user_id: userId,
+      messages,
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id' });
+
+  if (error) return res.status(500).json({ error: error.message });
+  res.json({ success: true });
 });
 
 module.exports = router;
