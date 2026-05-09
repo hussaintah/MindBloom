@@ -3,6 +3,8 @@ import { Link } from 'react-router-dom';
 import { LineChart, Line, XAxis, YAxis, Tooltip, ResponsiveContainer } from 'recharts';
 import { useAuth } from '../hooks/useAuth';
 import { API_URL } from '../lib/supabase';
+// Add this import at the top of Mood.js, Sleep.js, Dashboard.js
+import { fetchWithTimeout } from '../lib/fetchWithTimeout';
 
 const QUOTES = [
   "Every day is a new beginning. Take a deep breath and start again.",
@@ -24,8 +26,8 @@ export default function Dashboard() {
   useEffect(() => {
     if (!user) return;
     Promise.all([
-      fetch(`${API_URL}/api/tracking/history/${user.id}`).then(r => r.json()),
-      fetch(`${API_URL}/api/tracking/today/${user.id}`).then(r => r.json()),
+      fetchWithTimeout(`${API_URL}/api/tracking/history/${user.id}`).then(r => r.json()),
+      fetchWithTimeout(`${API_URL}/api/tracking/today/${user.id}`).then(r => r.json()),
     ]).then(([hist, tod]) => {
       setHistory(hist);
       setToday(tod);
