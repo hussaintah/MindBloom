@@ -1,6 +1,7 @@
-import { useState, useRef, useEffect } from 'react';
+import { useState, useRef, useEffect, useCallback } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { API_URL } from '../lib/supabase';
+import { fetchWithTimeout } from '../lib/fetchWithTimeout';
 
 const STARTERS = [
   "I'm feeling stressed lately 😓",
@@ -9,17 +10,44 @@ const STARTERS = [
   "Help me practice gratitude",
 ];
 
+const INITIAL_MESSAGE = {
+  role: 'assistant',
+  content: "Hi there! I'm Bloom, your personal wellness companion 🌸\n\nI'm here to listen, support, and help you build healthier habits. How are you feeling today?"
+};
+
 export default function Chat() {
   const { user } = useAuth();
-  const [messages, setMessages] = useState([
-    {
-      role: 'assistant',
-      content: "Hi there! I'm Bloom, your personal wellness companion 🌸\n\nI'm here to listen, support, and help you build healthier habits. How are you feeling today?"
-    }
-  ]);
+  const [messages, setMessages] = useState([INITIAL_MESSAGE]);
   const [input, setInput] = useState('');
   const [isTyping, setIsTyping] = useState(false);
+  const [loadingHistory, setLoadingHistory] = useState(true);
   const messagesEndRef = useRef(null);
+
+  // Load chat history from Supabase on mount
+  useEffect(() => {
+    if (!user) return;
+    fetchWithTimeout(`${API_URL}/api/chat/history/${user.id}`)
+      .then(r => r.json())
+      .then(d => {
+        if (d.messages && d.messages.length > 0) {
+          setMessages(d.messages);
+        }
+      })
+      .catch(() => {}) // silently fail — start fresh if history unavailable
+      .finally(() => setLoadingHistory(false));
+  }, [user]);
+
+  // Save chat history to Supabase
+  const saveHistory = useCallback(async (msgs) => {
+    if (!user) return;
+    try {
+      await fetchWithTimeout(`${API_URL}/api/chat/history/${user.id}`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ messages: msgs })
+      });
+    } catch {} // silently fail — don't interrupt the user experience
+  }, [user]);
 
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -35,14 +63,14 @@ export default function Chat() {
     setIsTyping(true);
 
     try {
-      const res = await fetch(`${API_URL}/api/chat`, {
+      const res = await fetchWithTimeout(`${API_URL}/api/chat`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
           userId: user.id,
           messages: newMessages.map(m => ({ role: m.role, content: m.content }))
         })
-      });
+      }, 30000); // 30 second timeout for streaming
 
       const reader = res.body.getReader();
       const decoder = new TextDecoder();
@@ -72,10 +100,27 @@ export default function Chat() {
           }
         }
       }
+
+      // Save the full conversation after Bloom finishes responding
+      const finalMessages = [
+        ...newMessages,
+        { role: 'assistant', content: assistantMsg }
+      ];
+      await saveHistory(finalMessages);
+
     } catch (err) {
       setIsTyping(false);
-      setMessages(prev => [...prev, { role: 'assistant', content: "Sorry, I'm having trouble connecting right now. Please try again in a moment 💙" }]);
+      const errMsg = err.message.includes('timed out')
+        ? "Bloom is taking a moment to wake up — please try again in a few seconds 💙"
+        : "Sorry, I'm having trouble connecting right now. Please try again in a moment 💙";
+      const withError = [...newMessages, { role: 'assistant', content: errMsg }];
+      setMessages(withError);
     }
+  };
+
+  const clearHistory = async () => {
+    setMessages([INITIAL_MESSAGE]);
+    await saveHistory([INITIAL_MESSAGE]);
   };
 
   const handleKeyDown = (e) => {
@@ -85,11 +130,28 @@ export default function Chat() {
     }
   };
 
+  if (loadingHistory) {
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '60vh' }}>
+        <p className="text-muted">Loading your conversation...</p>
+      </div>
+    );
+  }
+
   return (
     <div>
-      <div className="page-header">
-        <h1>Chat with Bloom 🌸</h1>
-        <p>Your AI companion for mental wellness support</p>
+      <div className="page-header" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+        <div>
+          <h1>Chat with Bloom 🌸</h1>
+          <p>Your AI companion for mental wellness support</p>
+        </div>
+        <button
+          className="btn btn-outline btn-sm"
+          onClick={clearHistory}
+          style={{ marginTop: 8, fontSize: 12 }}
+        >
+          Clear chat
+        </button>
       </div>
 
       <div className="chat-container">
@@ -120,7 +182,6 @@ export default function Chat() {
           <div ref={messagesEndRef} />
         </div>
 
-        {/* Starter prompts */}
         {messages.length <= 1 && (
           <div style={{ display: 'flex', gap: 8, flexWrap: 'wrap', marginBottom: 12 }}>
             {STARTERS.map((s) => (
