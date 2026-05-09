@@ -2,6 +2,8 @@ import { useState, useEffect } from 'react';
 import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer, ReferenceLine } from 'recharts';
 import { useAuth } from '../hooks/useAuth';
 import { API_URL } from '../lib/supabase';
+// Add this import at the top of Mood.js, Sleep.js, Dashboard.js
+import { fetchWithTimeout } from '../lib/fetchWithTimeout';
 
 const QUALITY_LABELS = ['Terrible', 'Poor', 'Okay', 'Good', 'Great'];
 
@@ -26,9 +28,9 @@ export default function Sleep() {
 
   useEffect(() => {
     if (!user) return;
-    fetch(`${API_URL}/api/tracking/history/${user.id}`)
+    fetchWithTimeout(`${API_URL}/api/tracking/history/${user.id}`)
       .then(r => r.json()).then(d => setHistory(d.sleep || []));
-    fetch(`${API_URL}/api/tracking/today/${user.id}`)
+    fetchWithTimeout(`${API_URL}/api/tracking/today/${user.id}`)
       .then(r => r.json()).then(d => {
         if (d.sleep) { setToday(d.sleep); setHours(d.sleep.hours); setQuality(d.sleep.quality); setNotes(d.sleep.notes || ''); }
       });
@@ -36,15 +38,15 @@ export default function Sleep() {
 
   const save = async () => {
     setLoading(true);
-    await fetch(`${API_URL}/api/tracking/sleep`, {
+    await fetchWithTimeout(`${API_URL}/api/tracking/sleep`, {
       method: 'POST', headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ userId: user.id, hours, quality, notes })
     });
     setSaved(true); setLoading(false);
     setTimeout(() => setSaved(false), 3000);
-    const d = await fetch(`${API_URL}/api/tracking/today/${user.id}`).then(r => r.json());
+    const d = await fetchWithTimeout(`${API_URL}/api/tracking/today/${user.id}`).then(r => r.json());
     setToday(d.sleep);
-    const hist = await fetch(`${API_URL}/api/tracking/history/${user.id}`).then(r => r.json());
+    const hist = await fetchWithTimeout(`${API_URL}/api/tracking/history/${user.id}`).then(r => r.json());
     setHistory(hist.sleep || []);
   };
 
