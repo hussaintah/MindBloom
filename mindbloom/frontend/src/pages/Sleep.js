@@ -25,6 +25,7 @@ export default function Sleep() {
   const [today, setToday] = useState(null);
   const [saved, setSaved] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState(null);
 
   useEffect(() => {
     if (!user) return;
@@ -66,6 +67,12 @@ export default function Sleep() {
         <h1>Sleep Analysis 🌙</h1>
         <p>Quality sleep is the foundation of mental health</p>
       </div>
+
+      {error && (
+        <div className="card" style={{ borderLeft: '4px solid #e74c3c', marginBottom: 16 }}>
+          <p style={{ color: '#e74c3c', margin: 0 }}>⚠️ {error}</p>
+        </div>
+      )}
 
       <div className="grid-2 gap-20">
         {/* Log form */}
