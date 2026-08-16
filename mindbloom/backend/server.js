@@ -46,5 +46,5 @@ cron.schedule('30 2 * * *', async () => {
   await sendDailyReminders('morning');
 }, { timezone: 'UTC' });
 
-const PORT = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`MindBloom backend running on port ${PORT}`));
