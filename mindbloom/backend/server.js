@@ -48,3 +48,8 @@ cron.schedule('30 2 * * *', async () => {
 
 const PORT = process.env.PORT || 10000;
 app.listen(PORT, () => console.log(`MindBloom backend running on port ${PORT}`));
+
+app.get('/', (req, res) => {
+    res.status(200).json({ status: "success", message: "MindBloom backend is live!" });
+});
+
